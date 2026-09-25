@@ -1,0 +1,15 @@
+[Unit]
+Description=TenderLens uWSGI
+After=network.target postgresql.service redis-server.service
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/tenderlens
+EnvironmentFile=/etc/tenderlens.env
+RuntimeDirectory=tenderlens
+ExecStart=/opt/tenderlens/.venv/bin/uwsgi --ini /opt/tenderlens/deploy/uwsgi/tenderlens.ini
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

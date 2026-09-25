@@ -1,0 +1,4 @@
+# Alternative to Celery beat. Install with: sudo crontab -u www-data -e
+# The management command is safe to overlap only if you accept duplicate HTTP;
+# cron does not take a lock. Prefer the systemd beat unit when Redis is available.
+0 */6 * * * cd /opt/tenderlens && /usr/bin/flock -n /run/tenderlens/crawl.lock /opt/tenderlens/.venv/bin/python manage.py crawl >> /var/log/tenderlens-crawl.log 2>&1

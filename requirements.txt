@@ -1,0 +1,9 @@
+Django>=5.2,<5.3
+psycopg[binary]>=3.2,<4
+requests>=2.32,<3
+beautifulsoup4>=4.12,<5
+celery>=5.4,<6
+redis>=5.2,<6
+matplotlib>=3.9,<4
+gunicorn>=23.0,<24
+whitenoise>=6.8,<7

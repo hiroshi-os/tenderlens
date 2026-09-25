@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Deadlines · TenderLens{% endblock %}
+{% block content %}
+<h1>Deadline calendar</h1>
+<p>
+  <a href="{% url 'calendar' %}?year={{ previous.0 }}&month={{ previous.1 }}">Previous</a>
+  · {{ label }} ·
+  <a href="{% url 'calendar' %}?year={{ next.0 }}&month={{ next.1 }}">Next</a>
+</p>
+<table class="calendar">
+  <thead><tr><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr></thead>
+  <tbody>
+    {% for week in weeks %}
+      <tr>
+        {% for day in week %}
+          <td class="{% if not day.in_month %}outside{% endif %}">
+            <div class="daynum">{{ day.date.day }}</div>
+            <ul>
+              {% for tender in day.tenders %}
+                <li><a href="{% url 'tender_detail' tender.pk %}">{{ tender.title|truncatechars:48 }}</a></li>
+              {% endfor %}
+            </ul>
+          </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

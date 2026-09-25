@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}TenderLens{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{% url 'home' %}">TenderLens</a>
+    <nav>
+      <a href="{% url 'home' %}">Tenders</a>
+      <a href="{% url 'dashboard' %}">Dashboard</a>
+      <a href="{% url 'calendar' %}">Deadlines</a>
+      <a href="{% url 'awards' %}">Awards</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'searches' %}">Searches</a>
+        <a href="{% url 'alerts' %}">Alerts</a>
+        <a href="{% url 'notifications' %}">Notices{% if unread_notifications %} ({{ unread_notifications }}){% endif %}</a>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit">Log out</button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}">Log in</a>
+        <a href="{% url 'signup' %}">Sign up</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main>
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    Public procurement listings for vendors. Figures are only as complete as the source page that published them.
+  </footer>
+</body>
+</html>

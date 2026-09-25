@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Notices · TenderLens{% endblock %}
+{% block content %}
+<h1>Notices</h1>
+<table>
+  <thead><tr><th>When</th><th>Notice</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for note in notifications %}
+      <tr>
+        <td>{{ note.created_at }}</td>
+        <td>
+          <form method="post" action="{% url 'notification_read' note.pk %}">
+            {% csrf_token %}
+            <button class="quiet" type="submit">{{ note.title }}</button>
+          </form>
+          <div class="muted">{{ note.body|linebreaksbr }}</div>
+        </td>
+        <td>{{ note.get_status_display }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="3">No notices yet. They appear after an ingest matches an alert.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

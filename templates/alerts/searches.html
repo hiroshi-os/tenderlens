@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Saved searches · TenderLens{% endblock %}
+{% block content %}
+<h1>Saved searches</h1>
+<form method="post" class="card">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Save search</button>
+</form>
+<table>
+  <thead><tr><th>Name</th><th>Matches now</th><th></th></tr></thead>
+  <tbody>
+    {% for item in searches %}
+      <tr>
+        <td>
+          {{ item.saved.name }}
+          <div class="muted">{{ item.saved.keywords }} {{ item.saved.category }} {{ item.saved.state }} {{ item.saved.ministry }}</div>
+        </td>
+        <td>{{ item.count }}</td>
+        <td>
+          <form method="post" action="{% url 'alert_from_search' item.saved.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="channel" value="in_app">
+            <button type="submit">Alert in app</button>
+          </form>
+          <form method="post" action="{% url 'search_delete' item.saved.pk %}">
+            {% csrf_token %}
+            <button class="quiet" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="3">No saved searches yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
