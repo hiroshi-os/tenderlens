@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: tenderlens
+          POSTGRES_PASSWORD: tenderlens
+          POSTGRES_DB: tenderlens
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tenderlens -d tenderlens"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgres://tenderlens:tenderlens@localhost:5432/tenderlens
+      DJANGO_SECRET_KEY: ci-only
+      DJANGO_DEBUG: "0"
+      DJANGO_SETTINGS_MODULE: config.test_settings
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: pip install -r requirements-dev.txt
+      - name: Lint
+        run: ruff check .
+      - name: Test
+        run: pytest

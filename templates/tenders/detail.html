@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}{{ tender.title }} · TenderLens{% endblock %}
+{% block content %}
+<p class="muted"><a href="{% url 'home' %}">Tenders</a></p>
+<h1>{{ tender.title }}</h1>
+<p class="muted">{{ tender.get_source_display }} · {{ tender.source_key }}</p>
+<dl class="facts card">
+  <dt>Buyer</dt><dd>{{ tender.buyer }}</dd>
+  <dt>Category</dt><dd>{{ tender.category|default:"—" }}</dd>
+  <dt>State</dt><dd>{{ tender.state|default:"—" }}</dd>
+  <dt>Location</dt><dd>{{ tender.location|default:"—" }} {% if tender.pincode %}{{ tender.pincode }}{% endif %}</dd>
+  <dt>Reference</dt><dd>{{ tender.reference_number|default:"—" }}</dd>
+  <dt>Published</dt><dd>{{ tender.published_at|default:"—" }}</dd>
+  <dt>Closes</dt><dd>{{ tender.deadline_at|default:"—" }}</dd>
+  <dt>Opens</dt><dd>{{ tender.opening_at|default:"—" }}</dd>
+  <dt>Estimated value</dt><dd>{{ tender.estimated_value_inr|inr }}</dd>
+  <dt>EMD</dt><dd>{{ tender.emd_inr|inr }}</dd>
+  <dt>Status</dt><dd>{{ tender.get_status_display }}</dd>
+  <dt>Official page</dt><dd>{% if tender.detail_url %}<a href="{{ tender.detail_url }}">Open on the source portal</a>{% else %}—{% endif %}</dd>
+</dl>
+{% if tender.description %}
+  <h2>Description</h2>
+  <p>{{ tender.description }}</p>
+{% endif %}
+{% endblock %}

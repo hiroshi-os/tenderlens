@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Dashboard · TenderLens{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<p class="muted">{{ tender_count }} tenders ingested. {{ valued_count }} of them publish an estimated value. Zero amounts on the source are stored as missing, not as ₹0.</p>
+<section>
+  <h2>Listings by organisation</h2>
+  <img class="chart" src="{% url 'chart' 'organisations' %}" alt="Bar chart of tender counts by organisation">
+  <table>
+    <thead><tr><th>Organisation</th><th>Tenders</th></tr></thead>
+    <tbody>
+      {% for row in volume %}
+        <tr><td>{{ row.buyer__organisation }}</td><td>{{ row.n }}</td></tr>
+      {% empty %}<tr><td colspan="2">No listings yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</section>
+<section>
+  <h2>Published estimated value</h2>
+  <img class="chart" src="{% url 'chart' 'spend-ministry' %}" alt="Bar chart of published estimated value by ministry">
+  <img class="chart" src="{% url 'chart' 'spend-state' %}" alt="Bar chart of published estimated value by state">
+  <h3>By ministry</h3>
+  <table>
+    <thead><tr><th>Ministry</th><th>Tenders with a value</th><th>Sum</th></tr></thead>
+    <tbody>
+      {% for row in spend_ministry %}
+        {% if row.buyer__ministry %}
+          <tr><td>{{ row.buyer__ministry }}</td><td>{{ row.n }}</td><td>{{ row.total|inr }}</td></tr>
+        {% endif %}
+      {% empty %}<tr><td colspan="3">No ministry has published an estimated value in the ingested rows.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+  <h3>By state</h3>
+  <table>
+    <thead><tr><th>State</th><th>Tenders with a value</th><th>Sum</th></tr></thead>
+    <tbody>
+      {% for row in spend_state %}
+        {% if row.state %}
+          <tr><td>{{ row.state }}</td><td>{{ row.n }}</td><td>{{ row.total|inr }}</td></tr>
+        {% endif %}
+      {% empty %}<tr><td colspan="3">No state value has been published on the ingested rows.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</section>
+<section>
+  <h2>Deadlines in the next 14 days</h2>
+  <img class="chart" src="{% url 'chart' 'deadlines' %}" alt="Bar chart of deadlines over the next 14 days">
+</section>
+<p class="muted">Award rows ingested: {{ award_count }}. See <a href="{% url 'awards' %}">Awards</a>.</p>
+{% endblock %}

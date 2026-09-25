@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Alerts · TenderLens{% endblock %}
+{% block content %}
+<h1>Alerts</h1>
+<p class="muted">Alerts are checked against tenders inserted by an ingest. They are not polled on a separate clock.</p>
+<form method="post" class="card">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Save alert</button>
+</form>
+<table>
+  <thead><tr><th>Name</th><th>Channel</th><th>Active</th><th>Last checked</th><th></th></tr></thead>
+  <tbody>
+    {% for alert in alerts %}
+      <tr>
+        <td>{{ alert.name }}<div class="muted">{{ alert.keywords }} {{ alert.category }}</div></td>
+        <td>{{ alert.get_channel_display }}</td>
+        <td>{{ alert.is_active|yesno:"yes,no" }}</td>
+        <td>{{ alert.last_evaluated_at|default:"—" }}</td>
+        <td>
+          <form method="post" action="{% url 'alert_delete' alert.pk %}">
+            {% csrf_token %}
+            <button class="quiet" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">No alerts yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
